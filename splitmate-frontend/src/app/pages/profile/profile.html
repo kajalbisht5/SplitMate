@@ -1,0 +1,275 @@
+
+<div class="profile-page">
+
+  <aside class="sidebar">
+    <a routerLink="/dashboard" class="brand">
+      <span class="brand-icon">S</span>
+      <span>SplitMate</span>
+    </a>
+
+    <div class="sidebar-menu">
+      <p class="menu-label">MENU</p>
+
+      <a routerLink="/dashboard"><span>⌂</span> Dashboard</a>
+      <a routerLink="/friends"><span>♙</span> Friends</a>
+      <a routerLink="/groups"><span>▣</span> Groups</a>
+      <a routerLink="/expenses"><span>↗</span> Expenses</a>
+      <a routerLink="/settlements"><span>⇄</span> Settlements</a>
+      <a routerLink="/profile" routerLinkActive="active"><span>⚙</span> Profile & Settings</a>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-avatar">K</div>
+      <div>
+        <strong>{{ profile.name }}</strong>
+        <small>Personal Account</small>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <header class="topbar">
+      <div>
+        <h1>Profile & Settings</h1>
+        <p>Manage your account information and preferences.</p>
+      </div>
+    </header>
+
+    <div class="success-message" *ngIf="successMessage">
+      ✓ {{ successMessage }}
+    </div>
+
+    <section class="profile-banner">
+      <div class="large-avatar">
+        {{ profile.name.charAt(0).toUpperCase() }}
+      </div>
+
+      <div class="banner-info">
+        <h2>{{ profile.name }}</h2>
+        <p>{{ profile.email }}</p>
+        <span>SplitMate Member</span>
+      </div>
+
+      <button
+        class="edit-btn"
+        type="button"
+        (click)="toggleEdit()"
+      >
+        {{ editing ? 'Cancel Editing' : '✎ Edit Profile' }}
+      </button>
+    </section>
+
+    <section class="content-card">
+      <div class="card-heading">
+        <div>
+          <h2>Personal Information</h2>
+          <p>Your personal account details.</p>
+        </div>
+      </div>
+
+      <form (ngSubmit)="saveProfile()">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Full Name</label>
+            <input
+              type="text"
+              name="name"
+              [(ngModel)]="profile.name"
+              [disabled]="!editing"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Email Address</label>
+            <input
+              type="email"
+              name="email"
+              [(ngModel)]="profile.email"
+              [disabled]="!editing"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input
+              type="tel"
+              name="phone"
+              [(ngModel)]="profile.phone"
+              [disabled]="!editing"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>City</label>
+            <input
+              type="text"
+              name="city"
+              [(ngModel)]="profile.city"
+              [disabled]="!editing"
+            />
+          </div>
+
+          <div class="form-group full-width">
+            <label>About Me</label>
+            <textarea
+              name="bio"
+              [(ngModel)]="profile.bio"
+              [disabled]="!editing"
+              rows="3"
+            ></textarea>
+          </div>
+
+        </div>
+
+        <button
+          *ngIf="editing"
+          class="primary-btn"
+          type="submit"
+        >
+          Save Changes
+        </button>
+
+      </form>
+    </section>
+
+    <section class="content-card">
+      <div class="card-heading">
+        <div>
+          <h2>Preferences</h2>
+          <p>Customize your SplitMate experience.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Currency</label>
+          <select [(ngModel)]="profile.currency" name="currency">
+            <option value="INR">Indian Rupee (₹)</option>
+            <option value="USD">US Dollar ($)</option>
+            <option value="EUR">Euro (€)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Language</label>
+          <select [(ngModel)]="profile.language" name="language">
+            <option value="English">English</option>
+            <option value="Hindi">Hindi</option>
+          </select>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="content-card">
+      <div class="card-heading">
+        <div>
+          <h2>Notifications</h2>
+          <p>Choose which updates you want to receive.</p>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Email Notifications</strong>
+          <p>Receive important updates through email.</p>
+        </div>
+        <input type="checkbox" [(ngModel)]="settings.emailNotifications" name="emailNotifications"/>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Payment Reminders</strong>
+          <p>Get reminders about pending payments.</p>
+        </div>
+        <input type="checkbox" [(ngModel)]="settings.paymentReminders" name="paymentReminders"/>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Expense Updates</strong>
+          <p>Get notified when expenses are added.</p>
+        </div>
+        <input type="checkbox" [(ngModel)]="settings.expenseUpdates" name="expenseUpdates"/>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Weekly Summary</strong>
+          <p>Receive a weekly spending summary.</p>
+        </div>
+        <input type="checkbox" [(ngModel)]="settings.weeklySummary" name="weeklySummary"/>
+      </div>
+    </section>
+
+    <section class="content-card">
+      <div class="card-heading">
+        <div>
+          <h2>Change Password</h2>
+          <p>Keep your account secure.</p>
+        </div>
+      </div>
+
+      <form (ngSubmit)="changePassword()">
+        <div class="form-grid">
+
+          <div class="form-group full-width">
+            <label>Current Password</label>
+            <input
+              type="password"
+              name="currentPassword"
+              [(ngModel)]="password.current"
+              placeholder="Enter current password"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label>New Password</label>
+            <input
+              type="password"
+              name="newPassword"
+              [(ngModel)]="password.newPassword"
+              placeholder="Enter new password"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              [(ngModel)]="password.confirm"
+              placeholder="Confirm new password"
+              required
+            />
+          </div>
+
+        </div>
+
+        <button type="submit" class="primary-btn">
+          Update Password
+        </button>
+      </form>
+    </section>
+
+    <section class="logout-card">
+      <div>
+        <h3>Logout from SplitMate</h3>
+        <p>Sign out of your account on this device.</p>
+      </div>
+
+      <button type="button" class="logout-btn" (click)="logout()">
+        Logout
+      </button>
+    </section>
+
+  </main>
+</div>

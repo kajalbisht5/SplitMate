@@ -1,0 +1,187 @@
+
+<div class="reports-page">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-icon">S</span>
+      <span>SplitMate</span>
+    </div>
+
+    <p class="menu-label">MENU</p>
+
+    <nav>
+      <a routerLink="/dashboard">⌂ Dashboard</a>
+      <a routerLink="/friends">♙ Friends</a>
+      <a routerLink="/groups">◫ Groups</a>
+      <a routerLink="/expenses">↗ Expenses</a>
+      <a routerLink="/settlements">⇄ Settlements</a>
+      <a routerLink="/messages">✉ Messages</a>
+      <a routerLink="/notifications">♧ Notifications</a>
+      <a routerLink="/reports" class="active">▥ Reports</a>
+      <a routerLink="/profile">⚙ Profile & Settings</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="user-avatar">KB</div>
+      <div>
+        <strong>Kajal Bisht</strong>
+        <small>Personal Account</small>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <header class="topbar">
+      <div>
+        <h1>Reports & Analytics</h1>
+        <p>Understand your spending habits and track your expenses.</p>
+      </div>
+      <div class="topbar-right">
+        <span class="date-label">November 2026</span>
+      </div>
+    </header>
+
+    <section class="welcome-section">
+      <div>
+        <h2>Your financial overview 📊</h2>
+        <p>Here's a breakdown of your expense activity.</p>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span>Total Spending</span>
+          <span class="stat-icon purple">₹</span>
+        </div>
+        <h2>₹{{ totalSpending | number }}</h2>
+        <p class="stat-description">Total expenses this month</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span>Daily Average</span>
+          <span class="stat-icon green">↗</span>
+        </div>
+        <h2>₹{{ averageDaily | number }}</h2>
+        <p class="stat-description">Average spending per day</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span>Top Category</span>
+          <span class="stat-icon orange">★</span>
+        </div>
+        <h2 class="category-heading">{{ highestCategory }}</h2>
+        <p class="stat-description">Your highest spending category</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span>Transactions</span>
+          <span class="stat-icon pink">↔</span>
+        </div>
+        <h2>{{ totalTransactions }}</h2>
+        <p class="stat-description">Total recorded expenses</p>
+      </div>
+
+    </section>
+
+    <section class="charts-grid">
+
+      <div class="chart-card">
+        <div class="card-heading">
+          <div>
+            <h3>Monthly Spending</h3>
+            <p>Compare your spending over the months</p>
+          </div>
+          <span class="chart-badge">Last 6 months</span>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="monthlyChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="card-heading">
+          <div>
+            <h3>Expense Breakdown</h3>
+            <p>Spending by category</p>
+          </div>
+        </div>
+
+        <div class="doughnut-container">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="category-card">
+      <div class="card-heading">
+        <div>
+          <h3>Category-wise Spending</h3>
+          <p>See where your money goes</p>
+        </div>
+      </div>
+
+      <div class="category-list">
+
+        <div class="category-row" *ngFor="let category of categories">
+
+          <div class="category-info">
+            <span class="category-dot"
+              [style.background]="category.color"></span>
+
+            <strong>{{ category.name }}</strong>
+          </div>
+
+          <div class="category-progress">
+            <div class="progress-track">
+              <div class="progress-fill"
+                [style.width.%]="category.percentage"
+                [style.background]="category.color">
+              </div>
+            </div>
+          </div>
+
+          <div class="category-amount">
+            <strong>₹{{ category.amount | number }}</strong>
+            <small>{{ category.percentage }}%</small>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section class="monthly-summary">
+      <div class="card-heading">
+        <div>
+          <h3>Monthly Expense Summary</h3>
+          <p>Your spending history for the last six months</p>
+        </div>
+      </div>
+
+      <div class="summary-table">
+
+        <div class="summary-row summary-header">
+          <span>Month</span>
+          <span>Total Spending</span>
+          <span>Status</span>
+        </div>
+
+        <div class="summary-row" *ngFor="let item of monthlyData">
+          <strong>{{ item.month }} 2026</strong>
+          <strong>₹{{ item.amount | number }}</strong>
+          <span class="summary-status">Recorded</span>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</div>

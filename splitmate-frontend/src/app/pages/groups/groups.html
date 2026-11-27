@@ -1,0 +1,187 @@
+
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-icon">S</span>
+      <span>SplitMate</span>
+    </div>
+
+    <p class="menu-label">MENU</p>
+
+    <nav class="navigation">
+      <a routerLink="/dashboard"><span>⌂</span> Dashboard</a>
+      <a routerLink="/friends"><span>♙</span> Friends</a>
+      <a routerLink="/groups" routerLinkActive="active"><span>▣</span> Groups</a>
+      <a routerLink="/expenses"><span>↗</span> Expenses</a>
+      <a routerLink="/settlements"><span>⇄</span> Settlements</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a routerLink="/login"><span>↪</span> Logout</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <header class="topbar">
+      <div>
+        <h1>My Groups</h1>
+        <p>Manage shared expenses with your people.</p>
+      </div>
+
+      <button class="primary-btn" (click)="toggleAddForm()">
+        + Create Group
+      </button>
+    </header>
+
+    <div class="success-message" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon purple">▣</div>
+        <p>Total Groups</p>
+        <h2>{{ groups.length }}</h2>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon green">♙</div>
+        <p>Total Members</p>
+        <h2>{{ totalMembers }}</h2>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon orange">₹</div>
+        <p>Total Group Expenses</p>
+        <h2>₹{{ totalExpenses | number }}</h2>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon pink">↗</div>
+        <p>Your Outstanding</p>
+        <h2>₹{{ totalYouOwe | number }}</h2>
+      </div>
+    </section>
+
+    <section class="create-form" *ngIf="showAddForm">
+      <div class="form-heading">
+        <div>
+          <h2>Create a new group</h2>
+          <p>Start sharing expenses with your friends.</p>
+        </div>
+        <button class="close-btn" (click)="toggleAddForm()">✕</button>
+      </div>
+
+      <form (ngSubmit)="createGroup()">
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Group Name *</label>
+            <input
+              type="text"
+              name="name"
+              [(ngModel)]="newGroup.name"
+              placeholder="e.g. Goa Trip 2026"
+              required
+            >
+          </div>
+
+          <div class="form-field">
+            <label>Group Icon</label>
+            <select name="icon" [(ngModel)]="newGroup.icon">
+              <option value="🏠">🏠 Home</option>
+              <option value="✈️">✈️ Travel</option>
+              <option value="🍕">🍕 Food</option>
+              <option value="🎉">🎉 Party</option>
+              <option value="💼">💼 Work</option>
+              <option value="🎓">🎓 College</option>
+            </select>
+          </div>
+
+          <div class="form-field full-width">
+            <label>Description</label>
+            <input
+              type="text"
+              name="description"
+              [(ngModel)]="newGroup.description"
+              placeholder="What is this group for?"
+            >
+          </div>
+        </div>
+
+        <button type="submit" class="primary-btn">
+          Create Group
+        </button>
+      </form>
+    </section>
+
+    <section class="groups-section">
+      <div class="section-heading">
+        <div>
+          <h2>All Groups</h2>
+          <p>Your shared expense spaces</p>
+        </div>
+
+        <input
+          class="search-input"
+          type="text"
+          [(ngModel)]="searchText"
+          placeholder="Search groups..."
+        >
+      </div>
+
+      <div class="groups-grid" *ngIf="filteredGroups.length > 0">
+
+        <div class="group-card" *ngFor="let group of filteredGroups">
+
+          <div class="group-top">
+            <div class="group-icon" [style.background]="group.color">
+              {{ group.icon }}
+            </div>
+
+            <button
+              class="delete-btn"
+              (click)="deleteGroup(group.id)"
+              title="Delete group"
+            >⋮</button>
+          </div>
+
+          <h3>{{ group.name }}</h3>
+          <p class="group-description">{{ group.description }}</p>
+
+          <div class="members">
+            <span *ngFor="let member of group.members">
+              {{ member.charAt(0).toUpperCase() }}
+            </span>
+            <small>{{ group.members.length }} members</small>
+          </div>
+
+          <div class="group-divider"></div>
+
+          <div class="expense-row">
+            <div>
+              <small>Total expenses</small>
+              <strong>₹{{ group.totalExpense | number }}</strong>
+            </div>
+
+            <div class="owe-amount">
+              <small>You owe</small>
+              <strong>₹{{ group.youOwe | number }}</strong>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="empty-state" *ngIf="filteredGroups.length === 0">
+        <span>▣</span>
+        <h3>No groups found</h3>
+        <p>Try another search or create a new group.</p>
+      </div>
+
+    </section>
+
+  </main>
+</div>

@@ -1,0 +1,288 @@
+
+<div class="dashboard-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="brand">
+      <div class="brand-icon">S</div>
+      <span>SplitMate</span>
+    </div>
+
+    <div class="menu-label">MENU</div>
+
+    <nav class="navigation">
+      <a routerLink="/dashboard" routerLinkActive="active">
+        <span>⌂</span> Dashboard
+      </a>
+
+      <!-- <a href="javascript:void(0)" (click)="addFriend()">
+        <span>♙</span> Friends
+      </a> -->
+      <a routerLink="/friends" routerLinkActive="active">
+  <span>♙</span> Friends
+</a>
+
+      <a href="javascript:void(0)" (click)="createGroup()">
+        <span>▣</span> Groups
+      </a>
+
+      <a href="javascript:void(0)" (click)="addExpense()">
+        <span>↗</span> Expenses
+      </a>
+
+      <a href="javascript:void(0)">
+        <span>⇄</span> Settlements
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="profile">
+        <div class="avatar">K</div>
+        <div>
+          <strong>{{ userName }} Bisht</strong>
+          <small>Personal Account</small>
+        </div>
+      </div>
+
+      <button class="logout-button" (click)="logout()">
+        ↪ Logout
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <header class="topbar">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Here's what's happening with your expenses.</p>
+      </div>
+
+      <div class="top-actions">
+        <button class="notification">♧</button>
+        <div class="top-avatar">K</div>
+      </div>
+    </header>
+
+    <!-- Welcome -->
+    <section class="welcome-section">
+      <div>
+        <h2>Welcome back, {{ userName }}! 👋</h2>
+        <p>Let's keep your shared expenses organized.</p>
+      </div>
+
+      <button class="primary-button" (click)="addExpense()">
+        + Add Expense
+      </button>
+    </section>
+
+    <!-- Balance Cards -->
+    <section class="balance-grid">
+
+      <div class="balance-card total-card">
+        <div class="card-heading">
+          <span>Total Balance</span>
+          <span class="card-icon">₹</span>
+        </div>
+        <h2>₹{{ balances.total | number }}</h2>
+        <small>Your net balance across all groups</small>
+      </div>
+
+      <div class="balance-card">
+        <div class="card-heading">
+          <span>You Owe</span>
+          <span class="card-icon owe-icon">↗</span>
+        </div>
+        <h2>₹{{ balances.owe | number }}</h2>
+        <small>Amount you need to pay</small>
+      </div>
+
+      <div class="balance-card">
+        <div class="card-heading">
+          <span>You Are Owed</span>
+          <span class="card-icon owed-icon">↙</span>
+        </div>
+        <h2>₹{{ balances.owed | number }}</h2>
+        <small>Amount others need to pay you</small>
+      </div>
+
+      <div class="balance-card">
+        <div class="card-heading">
+          <span>Active Groups</span>
+          <span class="card-icon group-icon">♧</span>
+        </div>
+        <h2>{{ balances.groups }}</h2>
+        <small>Your expense-sharing groups</small>
+      </div>
+
+    </section>
+
+    <!-- Analytics and Groups -->
+    <section class="content-grid">
+
+      <!-- Spending Chart -->
+      <div class="panel spending-panel">
+
+        <div class="panel-heading">
+          <div>
+            <h3>Monthly Spending</h3>
+            <p>Your shared expenses over time</p>
+          </div>
+
+          <span class="period">Last 6 months</span>
+        </div>
+
+        <div class="chart">
+          <div class="chart-bars">
+            <div class="bar-item" *ngFor="let item of monthlySpending">
+              <span class="bar-value">₹{{ item.amount }}</span>
+
+              <div
+                class="bar"
+                [style.height.%]="item.height">
+              </div>
+
+              <span class="month">{{ item.month }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Groups -->
+      <div class="panel groups-panel">
+
+        <div class="panel-heading">
+          <div>
+            <h3>Your Groups</h3>
+            <p>Manage shared expenses</p>
+          </div>
+
+          <button class="text-button" (click)="createGroup()">
+            View all
+          </button>
+        </div>
+
+        <div class="group-list">
+
+          <div class="group-item" *ngFor="let group of groups">
+
+            <div class="group-icon"
+              [style.background]="group.color">
+              {{ group.icon }}
+            </div>
+
+            <div class="group-info">
+              <strong>{{ group.name }}</strong>
+              <small>{{ group.members }} members</small>
+            </div>
+
+            <div class="group-amount">
+              <strong>₹{{ group.amount | number }}</strong>
+              <small>Group expenses</small>
+            </div>
+
+          </div>
+
+        </div>
+
+        <button class="outline-button" (click)="createGroup()">
+          + Create New Group
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- Recent Expenses -->
+    <section class="panel recent-panel">
+
+      <div class="panel-heading">
+        <div>
+          <h3>Recent Expenses</h3>
+          <p>Latest activity across your groups</p>
+        </div>
+
+        <button class="text-button" (click)="addExpense()">
+          View all
+        </button>
+      </div>
+
+      <div class="table-wrapper">
+
+        <table>
+          <thead>
+            <tr>
+              <th>Expense</th>
+              <th>Category</th>
+              <th>Date</th>
+              <th>Paid By</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let expense of expenses">
+
+              <td>
+                <div class="expense-name">
+                  <span class="expense-icon">{{ expense.icon }}</span>
+                  <strong>{{ expense.title }}</strong>
+                </div>
+              </td>
+
+              <td>{{ expense.category }}</td>
+
+              <td>{{ expense.date }}</td>
+
+              <td>{{ expense.paidBy }}</td>
+
+              <td class="expense-amount">
+                ₹{{ expense.amount | number }}
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="quick-actions">
+      <h3>Quick Actions</h3>
+
+      <div class="action-grid">
+
+        <button class="action-card" (click)="addExpense()">
+          <span>＋</span>
+          <strong>Add an Expense</strong>
+          <small>Record a new shared expense</small>
+        </button>
+
+        <button class="action-card" (click)="createGroup()">
+          <span>♧</span>
+          <strong>Create a Group</strong>
+          <small>Share expenses with friends</small>
+        </button>
+
+        <button class="action-card" (click)="addFriend()">
+          <span>♙</span>
+          <strong>Add a Friend</strong>
+          <small>Connect with your friends</small>
+        </button>
+
+      </div>
+    </section>
+
+    <footer class="footer">
+      © 2026 SplitMate. Made for sharing.
+    </footer>
+
+  </main>
+</div>

@@ -1,0 +1,190 @@
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">S</div>
+      <span>SplitMate</span>
+    </div>
+
+    <div class="menu-label">MENU</div>
+
+    <nav class="nav-menu">
+      <a routerLink="/dashboard" class="nav-link">
+        <span>⌂</span> Dashboard
+      </a>
+      <a routerLink="/friends" class="nav-link">
+        <span>♙</span> Friends
+      </a>
+      <a routerLink="/groups" class="nav-link">
+        <span>▣</span> Groups
+      </a>
+      <a routerLink="/expenses" class="nav-link">
+        <span>↗</span> Expenses
+      </a>
+      <a routerLink="/settlements" class="nav-link">
+        <span>⇄</span> Settlements
+      </a>
+      <a routerLink="/messages" routerLinkActive="active" class="nav-link">
+        <span>✉</span> Messages
+      </a>
+      <a routerLink="/profile" class="nav-link">
+        <span>◎</span> Profile
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="user-avatar">KB</div>
+      <div class="user-info">
+        <strong>Kajal Bisht</strong>
+        <small>Personal Account</small>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <header class="topbar">
+      <div>
+        <h1>Messages</h1>
+        <p>Stay connected with your friends and split smarter.</p>
+      </div>
+
+      <div class="topbar-right">
+        <div class="top-avatar">KB</div>
+      </div>
+    </header>
+
+    <section class="messages-container">
+
+      <!-- Chat List -->
+      <div class="chat-sidebar">
+
+        <div class="chat-heading">
+          <div>
+            <h2>Chats</h2>
+            <span>{{ chats.length }} conversations</span>
+          </div>
+          <span class="chat-icon">✉</span>
+        </div>
+
+        <div class="search-box">
+          <span>⌕</span>
+          <input
+            type="text"
+            placeholder="Search friends..."
+            [(ngModel)]="searchText"
+          />
+        </div>
+
+        <div class="chat-list">
+
+          <div
+            class="chat-item"
+            *ngFor="let chat of filteredChats"
+            [class.selected]="selectedChat.id === chat.id"
+            (click)="selectChat(chat)"
+          >
+            <div class="chat-avatar">
+              {{ chat.initials }}
+              <span
+                class="online-dot"
+                [class.offline]="!chat.online"
+              ></span>
+            </div>
+
+            <div class="chat-details">
+              <div class="chat-name-row">
+                <strong>{{ chat.name }}</strong>
+                <small>{{ chat.time }}</small>
+              </div>
+
+              <div class="chat-message-row">
+                <p>{{ chat.lastMessage }}</p>
+                <span class="unread-badge" *ngIf="chat.unread > 0">
+                  {{ chat.unread }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-search" *ngIf="filteredChats.length === 0">
+            No friends found.
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Conversation -->
+      <div class="conversation">
+
+        <div class="conversation-header">
+          <div class="conversation-user">
+            <div class="chat-avatar large-avatar">
+              {{ selectedChat.initials }}
+              <span
+                class="online-dot"
+                [class.offline]="!selectedChat.online"
+              ></span>
+            </div>
+
+            <div>
+              <h3>{{ selectedChat.name }}</h3>
+              <small>
+                {{ selectedChat.online ? 'Online' : 'Offline' }}
+              </small>
+            </div>
+          </div>
+
+          <button class="more-button" type="button">•••</button>
+        </div>
+
+        <div class="message-area">
+
+          <div class="date-divider">
+            <span>Conversation</span>
+          </div>
+
+          <div
+            class="message-row"
+            *ngFor="let message of selectedChat.messages"
+            [class.my-message-row]="message.sentByMe"
+          >
+            <div
+              class="message-bubble"
+              [class.my-message]="message.sentByMe"
+            >
+              <p>{{ message.text }}</p>
+              <small>{{ message.time }}</small>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Message Input -->
+        <form class="message-input-area" (ngSubmit)="sendMessage()">
+
+          <input
+            type="text"
+            name="newMessage"
+            [(ngModel)]="newMessage"
+            placeholder="Type your message..."
+            autocomplete="off"
+          />
+
+          <button
+            type="submit"
+            class="send-button"
+            [disabled]="!newMessage.trim()"
+          >
+            Send <span>➤</span>
+          </button>
+
+        </form>
+
+      </div>
+    </section>
+
+  </main>
+</div>

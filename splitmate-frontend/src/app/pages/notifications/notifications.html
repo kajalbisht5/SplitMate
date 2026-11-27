@@ -1,0 +1,165 @@
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">S</div>
+      <span>SplitMate</span>
+    </div>
+
+    <div class="menu-label">MENU</div>
+
+    <nav class="nav-menu">
+      <a routerLink="/dashboard" class="nav-link"><span>⌂</span> Dashboard</a>
+      <a routerLink="/friends" class="nav-link"><span>♙</span> Friends</a>
+      <a routerLink="/groups" class="nav-link"><span>▣</span> Groups</a>
+      <a routerLink="/expenses" class="nav-link"><span>↗</span> Expenses</a>
+      <a routerLink="/settlements" class="nav-link"><span>⇄</span> Settlements</a>
+      <a routerLink="/messages" class="nav-link"><span>✉</span> Messages</a>
+      <a routerLink="/notifications" routerLinkActive="active" class="nav-link">
+        <span>♢</span> Notifications
+      </a>
+      <a routerLink="/profile" class="nav-link"><span>◎</span> Profile</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="user-avatar">KB</div>
+      <div class="user-info">
+        <strong>Kajal Bisht</strong>
+        <small>Personal Account</small>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <header class="topbar">
+      <div>
+        <h1>Notifications</h1>
+        <p>Stay updated with your expenses and payments.</p>
+      </div>
+      <div class="top-avatar">KB</div>
+    </header>
+
+    <section class="notification-page">
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon purple">♢</div>
+          <div>
+            <h2>{{ notifications.length }}</h2>
+            <p>Total Notifications</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon orange">●</div>
+          <div>
+            <h2>{{ unreadCount }}</h2>
+            <p>Unread</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon green">✓</div>
+          <div>
+            <h2>{{ readCount }}</h2>
+            <p>Read</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="notification-card">
+
+        <div class="notification-header">
+          <div>
+            <h2>Recent Activity</h2>
+            <p>You have {{ unreadCount }} unread notifications.</p>
+          </div>
+
+          <div class="header-actions">
+            <button
+              type="button"
+              class="mark-all-btn"
+              (click)="markAllAsRead()"
+              [disabled]="unreadCount === 0"
+            >
+              Mark all as read
+            </button>
+
+            <button
+              type="button"
+              class="clear-btn"
+              (click)="clearAll()"
+              [disabled]="notifications.length === 0"
+            >
+              Clear all
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-tabs">
+          <button
+            type="button"
+            *ngFor="let filter of ['All', 'Unread', 'Read']"
+            [class.active]="activeFilter === filter"
+            (click)="setFilter(filter)"
+          >
+            {{ filter }}
+          </button>
+        </div>
+
+        <div class="notification-list">
+
+          <div
+            class="notification-item"
+            *ngFor="let notification of filteredNotifications"
+            [class.unread]="!notification.read"
+          >
+
+            <div class="notification-icon" [ngClass]="notification.type">
+              {{ notification.icon }}
+            </div>
+
+            <div class="notification-content">
+              <div class="notification-title-row">
+                <h3>{{ notification.title }}</h3>
+                <span class="unread-dot" *ngIf="!notification.read"></span>
+              </div>
+
+              <p>{{ notification.message }}</p>
+              <small>{{ notification.time }}</small>
+            </div>
+
+            <div class="notification-actions">
+              <button
+                type="button"
+                *ngIf="!notification.read"
+                (click)="markAsRead(notification)"
+              >
+                Mark read
+              </button>
+
+              <button
+                type="button"
+                class="delete-btn"
+                (click)="deleteNotification(notification.id)"
+              >
+                ✕
+              </button>
+            </div>
+
+          </div>
+
+          <div class="empty-state" *ngIf="filteredNotifications.length === 0">
+            <div>♢</div>
+            <h3>No notifications found</h3>
+            <p>You're all caught up!</p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</div>

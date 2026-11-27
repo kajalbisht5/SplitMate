@@ -1,0 +1,239 @@
+
+<div class="settlements-page">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <a routerLink="/dashboard" class="brand">
+      <span class="brand-icon">S</span>
+      <span>SplitMate</span>
+    </a>
+
+    <div class="sidebar-menu">
+      <p class="menu-label">MENU</p>
+
+      <a routerLink="/dashboard" routerLinkActive="active">
+        <span class="nav-icon">⌂</span>
+        <span>Dashboard</span>
+      </a>
+
+      <a routerLink="/friends" routerLinkActive="active">
+        <span class="nav-icon">♙</span>
+        <span>Friends</span>
+      </a>
+
+      <a routerLink="/groups" routerLinkActive="active">
+        <span class="nav-icon">▣</span>
+        <span>Groups</span>
+      </a>
+
+      <a routerLink="/expenses" routerLinkActive="active">
+        <span class="nav-icon">↗</span>
+        <span>Expenses</span>
+      </a>
+
+      <a routerLink="/settlements" routerLinkActive="active">
+        <span class="nav-icon">⇄</span>
+        <span>Settlements</span>
+      </a>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-avatar">K</div>
+      <div class="user-info">
+        <strong>Kajal Bisht</strong>
+        <small>Personal Account</small>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <header class="topbar">
+      <div>
+        <h1>Settlements</h1>
+        <p>Keep track of who owes whom and settle up easily.</p>
+      </div>
+
+      <div class="header-badge">
+        <span class="status-dot"></span>
+        {{ pendingCount }} Pending Payments
+      </div>
+    </header>
+
+    <!-- Success Message -->
+    <div class="success-message" *ngIf="successMessage">
+      <span>✓</span>
+      {{ successMessage }}
+    </div>
+
+    <!-- Summary Cards -->
+    <section class="stats-grid">
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon red">↗</div>
+          <span class="stat-label red-text">You owe</span>
+        </div>
+        <h2>₹{{ totalYouOwe | number:'1.0-0' }}</h2>
+        <p>Money you need to pay</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon green">↙</div>
+          <span class="stat-label green-text">You are owed</span>
+        </div>
+        <h2>₹{{ totalOwedToYou | number:'1.0-0' }}</h2>
+        <p>Money others need to pay you</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon purple">✓</div>
+          <span class="stat-label purple-text">Settled</span>
+        </div>
+        <h2>₹{{ totalSettled | number:'1.0-0' }}</h2>
+        <p>Total completed payments</p>
+      </div>
+
+    </section>
+
+    <!-- Helpful Information -->
+    <section class="info-banner">
+      <div class="info-icon">💡</div>
+      <div>
+        <h3>Stay debt-free, stay organized!</h3>
+        <p>
+          Settle your pending balances with friends and keep your shared
+          expenses organized in one place.
+        </p>
+      </div>
+    </section>
+
+    <!-- Settlement List -->
+    <section class="settlements-section">
+
+      <div class="section-heading">
+        <div>
+          <h2>Payment Overview</h2>
+          <p>Manage your pending and completed settlements.</p>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-bar">
+
+        <div class="search-box">
+          <span>⌕</span>
+          <input
+            type="text"
+            name="searchText"
+            [(ngModel)]="searchText"
+            placeholder="Search by friend or group..."
+          />
+        </div>
+
+        <select
+          name="selectedStatus"
+          [(ngModel)]="selectedStatus"
+          class="status-filter"
+        >
+          <option value="All">All Payments</option>
+          <option value="Pending">Pending</option>
+          <option value="Settled">Settled</option>
+        </select>
+
+      </div>
+
+      <!-- Settlement Cards -->
+      <div class="settlement-list">
+
+        <div
+          class="settlement-card"
+          *ngFor="let item of filteredSettlements"
+        >
+
+          <div class="person-section">
+            <div
+              class="person-avatar"
+              [class.avatar-green]="item.direction === 'owed'"
+            >
+              {{ item.initials }}
+            </div>
+
+            <div class="person-info">
+              <h3>{{ item.person }}</h3>
+              <p>{{ item.group }}</p>
+            </div>
+          </div>
+
+          <div class="payment-direction">
+            <span *ngIf="item.direction === 'owe'" class="direction-owe">
+              You owe
+            </span>
+
+            <span *ngIf="item.direction === 'owed'" class="direction-owed">
+              Owes you
+            </span>
+
+            <strong>₹{{ item.amount | number:'1.0-0' }}</strong>
+          </div>
+
+          <div class="payment-meta">
+            <span>{{ item.date | date:'dd MMM yyyy' }}</span>
+            <small>{{ item.method }}</small>
+          </div>
+
+          <div class="settlement-action">
+
+            <span
+              class="status-badge"
+              [class.pending]="item.status === 'Pending'"
+              [class.settled]="item.status === 'Settled'"
+            >
+              <span *ngIf="item.status === 'Settled'">✓</span>
+              {{ item.status }}
+            </span>
+
+            <button
+              *ngIf="item.status === 'Pending' && item.direction === 'owe'"
+              type="button"
+              class="settle-btn"
+              (click)="markAsSettled(item.id)"
+            >
+              Settle Up
+            </button>
+
+            <button
+              *ngIf="item.status === 'Pending' && item.direction === 'owed'"
+              type="button"
+              class="remind-btn"
+              (click)="remindPerson(item.person, item.amount)"
+            >
+              Remind
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="empty-state" *ngIf="filteredSettlements.length === 0">
+          <span>💸</span>
+          <h3>No settlements found</h3>
+          <p>Try changing your search or payment filter.</p>
+        </div>
+
+      </div>
+
+      <div class="list-footer">
+        Showing {{ filteredSettlements.length }} of {{ settlements.length }} payments
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

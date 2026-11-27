@@ -1,0 +1,232 @@
+
+<div class="friends-layout">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">S</div>
+      <span>SplitMate</span>
+    </div>
+
+    <div class="menu-label">MENU</div>
+
+    <nav class="navigation">
+      <a routerLink="/dashboard">⌂ &nbsp; Dashboard</a>
+      <a routerLink="/friends" class="active">♙ &nbsp; Friends</a>
+      <a routerLink="/groups">▣ &nbsp; Groups</a>
+      <a routerLink="/expenses">↗ &nbsp; Expenses</a>
+      <a routerLink="/settlements">⇄ &nbsp; Settlements</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="profile">
+        <div class="avatar">K</div>
+        <div>
+          <strong>Kajal Bisht</strong>
+          <small>Personal Account</small>
+        </div>
+      </div>
+      <a class="logout-link" routerLink="/login">↪ Logout</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <header class="topbar">
+      <div>
+        <h1>Friends</h1>
+        <p>Manage your connections and shared expenses.</p>
+      </div>
+      <div class="top-avatar">K</div>
+    </header>
+
+    <section class="welcome-section">
+      <div>
+        <h2>Your Friends 👋</h2>
+        <p>Keep track of who owes you and who you owe.</p>
+      </div>
+
+      <button class="primary-button" (click)="toggleAddForm()">
+        + Add Friend
+      </button>
+    </section>
+
+    <div class="success-message" *ngIf="successMessage">
+      ✓ {{ successMessage }}
+    </div>
+
+    <!-- Summary Cards -->
+    <section class="summary-grid">
+
+      <div class="summary-card">
+        <div class="summary-icon purple">♙</div>
+        <div>
+          <small>Total Friends</small>
+          <h2>{{ totalFriends }}</h2>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon green">↙</div>
+        <div>
+          <small>They Owe You</small>
+          <h2>₹{{ totalTheyOwe | number }}</h2>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon orange">↗</div>
+        <div>
+          <small>You Owe</small>
+          <h2>₹{{ totalYouOwe | number }}</h2>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Add Friend Form -->
+    <section class="add-friend-panel" *ngIf="showAddForm">
+
+      <div class="form-heading">
+        <div>
+          <h3>Add a New Friend</h3>
+          <p>Enter your friend's details below.</p>
+        </div>
+
+        <button class="close-button" (click)="toggleAddForm()">✕</button>
+      </div>
+
+      <form (ngSubmit)="addFriend()" #friendForm="ngForm">
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Full Name *</label>
+            <input
+              type="text"
+              name="name"
+              [(ngModel)]="newFriend.name"
+              placeholder="Enter full name"
+              required
+              minlength="3">
+          </div>
+
+          <div class="form-field">
+            <label>Email Address *</label>
+            <input
+              type="email"
+              name="email"
+              [(ngModel)]="newFriend.email"
+              placeholder="friend@example.com"
+              required
+              email>
+          </div>
+
+          <div class="form-field">
+            <label>Phone Number</label>
+            <input
+              type="tel"
+              name="phone"
+              [(ngModel)]="newFriend.phone"
+              placeholder="Enter phone number">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-button"
+            (click)="toggleAddForm()">
+            Cancel
+          </button>
+
+          <button type="submit" class="primary-button"
+            [disabled]="friendForm.invalid">
+            Add Friend
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- Search -->
+    <section class="friends-panel">
+
+      <div class="panel-heading">
+        <div>
+          <h3>All Friends</h3>
+          <p>Your connected friends and their balances.</p>
+        </div>
+
+        <div class="search-box">
+          <span>⌕</span>
+          <input
+            type="text"
+            [(ngModel)]="searchText"
+            placeholder="Search friends...">
+        </div>
+      </div>
+
+      <div class="friends-list">
+
+        <div class="friend-row" *ngFor="let friend of filteredFriends">
+
+          <div class="friend-details">
+            <div class="friend-avatar"
+              [style.background]="friend.color">
+              {{ friend.initials }}
+            </div>
+
+            <div>
+              <strong>{{ friend.name }}</strong>
+              <small>{{ friend.email }}</small>
+              <small *ngIf="friend.phone">{{ friend.phone }}</small>
+            </div>
+          </div>
+
+          <div class="shared-amount">
+            <small>Total shared</small>
+            <strong>₹{{ friend.totalShared | number }}</strong>
+          </div>
+
+          <div class="balance-status">
+            <small *ngIf="friend.theyOwe > 0" class="positive">
+              Owes you
+            </small>
+            <strong *ngIf="friend.theyOwe > 0" class="positive">
+              +₹{{ friend.theyOwe | number }}
+            </strong>
+
+            <small *ngIf="friend.youOwe > 0" class="negative">
+              You owe
+            </small>
+            <strong *ngIf="friend.youOwe > 0" class="negative">
+              -₹{{ friend.youOwe | number }}
+            </strong>
+
+            <strong *ngIf="friend.youOwe === 0 && friend.theyOwe === 0"
+              class="settled">
+              Settled
+            </strong>
+          </div>
+
+          <button class="remove-button"
+            title="Remove friend"
+            (click)="removeFriend(friend.id)">
+            ✕
+          </button>
+
+        </div>
+
+        <div class="empty-state" *ngIf="filteredFriends.length === 0">
+          <span>🔍</span>
+          <h3>No friends found</h3>
+          <p>Try a different search or add a new friend.</p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <footer class="footer">
+      © 2026 SplitMate. Made for sharing.
+    </footer>
+
+  </main>
+</div>
